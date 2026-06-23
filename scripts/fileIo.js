@@ -17,15 +17,16 @@ export function isFileSystemAccessSupported() {
 }
 
 /**
- * Opens a file picker, reads the selected file as text, and stores its
- * handle under the given type key.
+ * Opens a file picker and reads the selected file as text.
+ * Does NOT store a handle by itself, since the type (csv/json) isn't known
+ * until the caller inspects the filename. Call registerHandle() afterward
+ * to track it for future Save calls.
  *
- * @param {"csv"|"json"} type - which handle slot to track this file under
- * @param {Array<string>} extensions - e.g. [".csv"] for the picker filter
- * @returns {Promise<{ name: string, content: string }|null>} null if cancelled
+ * @param {Array<string>} extensions - e.g. [".csv", ".json"] for the picker filter
+ * @returns {Promise<{ name: string, content: string, handle: FileSystemFileHandle }|null>} null if cancelled
  * @throws {Error} if unsupported or read fails
  */
-export async function openFile(type, extensions) {
+export async function openFile(extensions) {
     if (!isFileSystemAccessSupported()) {
         throw new Error(
             "Your browser doesn't support file opening. Try Chrome or Edge."
@@ -53,11 +54,21 @@ export async function openFile(type, extensions) {
     try {
         const file = await handle.getFile();
         const content = await file.text();
-        fileHandles[type] = handle;
-        return { name: file.name, content };
+        return { name: file.name, content, handle };
     } catch (e) {
         throw new Error("Failed to read the selected file.");
     }
+}
+
+/**
+ * Registers a handle under a type key (e.g. after Open detects the type
+ * from the filename), so a later Save writes back to the same file.
+ *
+ * @param {"csv"|"json"} type
+ * @param {FileSystemFileHandle} handle
+ */
+export function registerHandle(type, handle) {
+    fileHandles[type] = handle;
 }
 
 /**
@@ -115,4 +126,4 @@ export async function saveFile(type, content, extensions, suggestedName) {
 export function clearFileHandles() {
     fileHandles.csv = null;
     fileHandles.json = null;
-}
+}   

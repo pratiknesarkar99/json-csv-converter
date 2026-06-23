@@ -1,21 +1,36 @@
 import { jsonToCsv } from "./jsonToCsv.js";
 import { csvToJson } from "./csvToJson.js";
 import { isValidJson } from "./validators.js";
-import { openFile, saveFile, clearFileHandles } from "./fileIO.js";
+import { openFile, saveFile, registerHandle, clearFileHandles } from "./fileIO.js";
 import {
     inputBox,
     outputBox,
     toCsvBtn,
     toJsonBtn,
     clearBtn,
-    openCsvBtn,
-    saveCsvBtn,
-    openJsonBtn,
-    saveJsonBtn,
+    openBtn,
+    saveBtn,
     showWarning,
     clearWarning,
     setFileStatus,
 } from "./dom.js";
+
+// Tracks which format ("csv" or "json") the user last worked with, set by
+// opening a file or running a conversion. Save uses this to know which
+// extension/file-handle to write to, since there's no longer a dedicated
+// Save CSV / Save JSON button to make that explicit.
+let activeFileType = null;
+
+/**
+ * Detects file type from a filename's extension.
+ * @returns {"csv"|"json"|null}
+ */
+function detectTypeFromName(name) {
+    const lower = name.toLowerCase();
+    if (lower.endsWith(".csv")) return "csv";
+    if (lower.endsWith(".json")) return "json";
+    return null;
+}
 
 toCsvBtn.addEventListener("click", () => {
     clearWarning();
@@ -42,6 +57,7 @@ toCsvBtn.addEventListener("click", () => {
 
     try {
         outputBox.value = jsonToCsv(data);
+        activeFileType = "csv";
     } catch (e) {
         showWarning(e.message);
         outputBox.value = "";
@@ -62,75 +78,56 @@ toJsonBtn.addEventListener("click", () => {
     try {
         const result = csvToJson(rawInput);
         outputBox.value = JSON.stringify(result, null, 2);
+        activeFileType = "json";
     } catch (e) {
         showWarning(e.message);
         outputBox.value = "";
     }
 });
 
-openCsvBtn.addEventListener("click", async () => {
+openBtn.addEventListener("click", async () => {
     clearWarning();
 
     try {
-        const result = await openFile("csv", [".csv"]);
+        const result = await openFile([".csv", ".json"]);
         if (result === null) return; // user cancelled picker
 
+        const type = detectTypeFromName(result.name);
+
+        if (type === null) {
+            showWarning("Please choose a .csv or .json file.");
+            return;
+        }
+
         inputBox.value = result.content;
+        activeFileType = type;
+        registerHandle(type, result.handle);
         setFileStatus(result.name);
     } catch (e) {
         showWarning(e.message);
     }
 });
 
-openJsonBtn.addEventListener("click", async () => {
+saveBtn.addEventListener("click", async () => {
     clearWarning();
 
-    try {
-        const result = await openFile("json", [".json"]);
-        if (result === null) return; // user cancelled picker
-
-        inputBox.value = result.content;
-        setFileStatus(result.name);
-    } catch (e) {
-        showWarning(e.message);
-    }
-});
-
-saveCsvBtn.addEventListener("click", async () => {
-    clearWarning();
-
-    // CSV content is whichever box currently holds it: prefer output (result
-    // of a "To CSV" conversion), fall back to input (a CSV file opened directly).
     const content = outputBox.value.trim() !== "" ? outputBox.value : inputBox.value;
 
     if (content.trim() === "") {
-        showWarning("Nothing to save. Convert or load some CSV first.");
+        showWarning("Nothing to save. Convert or open a file first.");
         return;
     }
 
-    try {
-        const savedName = await saveFile("csv", content, [".csv"], "data.csv");
-        if (savedName === null) return; // user cancelled picker
-        setFileStatus(savedName);
-    } catch (e) {
-        showWarning(e.message);
-    }
-});
-
-saveJsonBtn.addEventListener("click", async () => {
-    clearWarning();
-
-    // JSON content is whichever box currently holds it: prefer output (result
-    // of a "To JSON" conversion), fall back to input (a JSON file opened directly).
-    const content = outputBox.value.trim() !== "" ? outputBox.value : inputBox.value;
-
-    if (content.trim() === "") {
-        showWarning("Nothing to save. Convert or load some JSON first.");
+    if (activeFileType === null) {
+        showWarning("Convert or open a file first, so I know whether to save as CSV or JSON.");
         return;
     }
 
+    const extensions = activeFileType === "csv" ? [".csv"] : [".json"];
+    const suggestedName = activeFileType === "csv" ? "data.csv" : "data.json";
+
     try {
-        const savedName = await saveFile("json", content, [".json"], "data.json");
+        const savedName = await saveFile(activeFileType, content, extensions, suggestedName);
         if (savedName === null) return; // user cancelled picker
         setFileStatus(savedName);
     } catch (e) {
@@ -144,4 +141,5 @@ clearBtn.addEventListener("click", () => {
     clearWarning();
     clearFileHandles();
     setFileStatus("");
+    activeFileType = null;
 });

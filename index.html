@@ -29,17 +29,9 @@
         <p id="warning" class="warning" hidden></p>
 
         <div class="file-actions">
-            <div class="file-group">
-                <span class="file-group-label">CSV</span>
-                <button id="open-csv-btn" class="btn btn-ghost" type="button">Open</button>
-                <button id="save-csv-btn" class="btn btn-ghost" type="button">Save</button>
-            </div>
-            <div class="file-group">
-                <span class="file-group-label">JSON</span>
-                <button id="open-json-btn" class="btn btn-ghost" type="button">Open</button>
-                <button id="save-json-btn" class="btn btn-ghost" type="button">Save</button>
-            </div>
+            <button id="open-btn" class="btn btn-ghost" type="button">Upload CSV / JSON</button>
             <span id="file-status" class="file-status"></span>
+            <button id="save-btn" class="btn btn-ghost" type="button">Download Result</button>
         </div>
 
         <div class="converter">
@@ -57,6 +49,8 @@
             <div class="actions-mid">
                 <button id="to-csv-btn" class="btn btn-primary" type="button">To CSV</button>
                 <button id="to-json-btn" class="btn btn-primary" type="button">To JSON</button>
+                <center><span>...</span></center>
+                <button id="clear-btn" class="btn btn-danger" type="button">Clear</button>
             </div>
 
             <div class="pipe" aria-hidden="true">
@@ -70,10 +64,6 @@
                 <textarea id="output-box" placeholder="Result will appear here..." readonly
                     spellcheck="false"></textarea>
             </div>
-        </div>
-
-        <div class="actions">
-            <button id="clear-btn" class="btn btn-danger" type="button">Clear</button>
         </div>
     </div>
 

@@ -5,10 +5,8 @@ export const toCsvBtn = document.getElementById("to-csv-btn");
 export const toJsonBtn = document.getElementById("to-json-btn");
 export const clearBtn = document.getElementById("clear-btn");
 export const warningEl = document.getElementById("warning");
-export const openCsvBtn = document.getElementById("open-csv-btn");
-export const saveCsvBtn = document.getElementById("save-csv-btn");
-export const openJsonBtn = document.getElementById("open-json-btn");
-export const saveJsonBtn = document.getElementById("save-json-btn");
+export const openBtn = document.getElementById("open-btn");
+export const saveBtn = document.getElementById("save-btn");
 export const fileStatusEl = document.getElementById("file-status");
 
 /**

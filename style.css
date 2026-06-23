@@ -1,13 +1,42 @@
-:root {
-    --color-bg: #f7f7f8;
-    --color-surface: #ffffff;
-    --color-border: #d8d8df;
-    --color-text: #1f2024;
-    --color-accent: #3a59d1;
-    --color-warning-bg: #fdecea;
-    --color-warning-text: #b3261e;
+/* ===== Theme tokens ===== */
+
+:root,
+[data-theme="dark"] {
+    --color-bg: #15161a;
+    --color-surface: #1d1f25;
+    --color-surface-alt: #25272e;
+    --color-border: #34373f;
+    --color-text: #e8e6e0;
+    --color-text-dim: #9a9ca3;
+    --color-accent: #e8a23d;
+    --color-accent-contrast: #15161a;
+    --color-secondary: #4fb3a8;
+    --color-secondary-contrast: #15161a;
+    --color-danger: #d96b6b;
+    --color-warning-bg: #3a2420;
+    --color-warning-text: #f0a591;
     --radius: 6px;
+    --font-mono: "JetBrains Mono", "SF Mono", Consolas, monospace;
+    --font-sans: "Inter", system-ui, sans-serif;
 }
+
+[data-theme="light"] {
+    --color-bg: #f6f5f1;
+    --color-surface: #ffffff;
+    --color-surface-alt: #ececE6;
+    --color-border: #d8d5cc;
+    --color-text: #1f2024;
+    --color-text-dim: #6b6d73;
+    --color-accent: #c1791f;
+    --color-accent-contrast: #ffffff;
+    --color-secondary: #2f8a80;
+    --color-secondary-contrast: #ffffff;
+    --color-danger: #b3433f;
+    --color-warning-bg: #fbe9e5;
+    --color-warning-text: #9c3b2e;
+}
+
+/* ===== Base ===== */
 
 * {
     box-sizing: border-box;
@@ -15,27 +44,210 @@
 
 body {
     margin: 0;
-    font-family: system-ui, sans-serif;
+    font-family: var(--font-sans);
     background: var(--color-bg);
     color: var(--color-text);
+    transition: background 0.2s ease, color 0.2s ease;
 }
 
 .app {
-    max-width: 900px;
-    margin: 2rem auto;
-    padding: 1.5rem;
+    max-width: 960px;
+    margin: 2.5rem auto;
+    padding: 0 1.5rem 2.5rem;
 }
 
-h1 {
-    margin-bottom: 1rem;
+/* ===== Header ===== */
+
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
 }
+
+.brand {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+}
+
+.brand-mark {
+    font-family: var(--font-mono);
+    color: var(--color-secondary);
+    font-size: 1.1rem;
+}
+
+.brand h1 {
+    font-family: var(--font-mono);
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+
+.brand-accent {
+    color: var(--color-accent);
+}
+
+.theme-toggle {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    width: 2.4rem;
+    height: 2.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.1rem;
+    position: relative;
+}
+
+.theme-icon {
+    position: absolute;
+}
+
+.theme-icon-sun {
+    opacity: 0;
+}
+
+[data-theme="light"] .theme-icon-sun {
+    opacity: 1;
+}
+
+[data-theme="light"] .theme-icon-moon {
+    opacity: 0;
+}
+
+[data-theme="dark"] .theme-icon-moon,
+:root .theme-icon-moon {
+    opacity: 1;
+}
+
+[data-theme="dark"] .theme-icon-sun {
+    opacity: 0;
+}
+
+/* ===== Warning ===== */
 
 .warning {
     background: var(--color-warning-bg);
     color: var(--color-warning-text);
-    padding: 0.6rem 1rem;
+    padding: 0.7rem 1rem;
     border-radius: var(--radius);
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.9rem;
+    border: 1px solid color-mix(in srgb, var(--color-warning-text) 30%, transparent);
+}
+
+/* ===== File actions ===== */
+
+.file-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.file-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 0.4rem 0.6rem;
+}
+
+.file-group-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0 0.3rem;
+}
+
+.file-status {
+    font-size: 0.85rem;
+    color: var(--color-text-dim);
+    font-family: var(--font-mono);
+}
+
+/* ===== Converter layout ===== */
+
+.converter {
+    display: flex;
+    align-items: stretch;
+    gap: 0.75rem;
+}
+
+.field {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.field label {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--color-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+textarea {
+    height: 360px;
+    resize: vertical;
+    padding: 0.9rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: 0.88rem;
+    line-height: 1.5;
+}
+
+textarea::placeholder {
+    color: var(--color-text-dim);
+}
+
+textarea:focus {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 1px;
+}
+
+textarea[readonly] {
+    background: var(--color-surface-alt);
+}
+
+/* ===== Pipe (signature divider) ===== */
+
+.pipe {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding-top: 2rem;
+    width: 1.5rem;
+}
+
+.pipe-line {
+    flex: 1;
+    width: 1px;
+    background: var(--color-border);
+}
+
+.pipe-glyph {
+    font-family: var(--font-mono);
+    color: var(--color-secondary);
+    font-size: 0.9rem;
 }
 
 .actions-mid {
@@ -44,81 +256,83 @@ h1 {
     gap: 0.6rem;
     justify-content: center;
     align-items: stretch;
-    min-width: 140px;
+    min-width: 130px;
 }
 
 .actions-mid button {
     white-space: nowrap;
 }
 
-.file-actions {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-}
+/* ===== Buttons ===== */
 
-.file-status {
-    font-size: 0.85rem;
-    color: #555;
-}
-
-.converter {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
-
-.field {
-    flex: 1;
-    min-width: 280px;
-    display: flex;
-    flex-direction: column;
-}
-
-.field label {
-    font-weight: 600;
-    margin-bottom: 0.4rem;
-}
-
-textarea {
-    height: 320px;
-    resize: vertical;
-    padding: 0.75rem;
-    border: 1px solid var(--color-border);
+.btn {
+    padding: 0.55rem 1.1rem;
     border-radius: var(--radius);
-    background: var(--color-surface);
-    font-family: monospace;
-    font-size: 0.9rem;
+    border: 1px solid transparent;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: opacity 0.15s ease, transform 0.05s ease;
 }
 
-textarea:focus {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 1px;
+.btn:hover {
+    opacity: 0.88;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn-primary {
+    background: var(--color-accent);
+    color: var(--color-accent-contrast);
+}
+
+.btn-ghost {
+    background: transparent;
+    border-color: var(--color-border);
+    color: var(--color-text);
+    padding: 0.4rem 0.75rem;
+    font-size: 0.82rem;
+}
+
+.btn-danger {
+    background: transparent;
+    border-color: var(--color-danger);
+    color: var(--color-danger);
 }
 
 .actions {
-    margin-top: 1rem;
+    margin-top: 1.5rem;
     display: flex;
-    gap: 0.75rem;
+    justify-content: flex-end;
 }
 
-button {
-    padding: 0.6rem 1.2rem;
-    border-radius: var(--radius);
-    border: none;
-    background: var(--color-accent);
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-}
+/* ===== Responsive ===== */
 
-button:hover {
-    opacity: 0.9;
-}
+@media (max-width: 720px) {
+    .converter {
+        flex-direction: column;
+    }
 
-#clear-btn,
-#to-json-btn {
-    background: var(--color-border);
-    color: var(--color-text);
+    .pipe {
+        flex-direction: row;
+        width: auto;
+        padding: 0;
+    }
+
+    .pipe-line {
+        height: 1px;
+        width: auto;
+    }
+
+    .actions-mid {
+        flex-direction: row;
+        min-width: 0;
+    }
+
+    textarea {
+        height: 220px;
+    }
 }

@@ -36,8 +36,12 @@ toCsvBtn.addEventListener("click", () => {
         return;
     }
 
+    // A single object (not already an array) is common for real-world API
+    // responses. Wrap it so the user doesn't have to manually add brackets.
+    const data = Array.isArray(parsed) ? parsed : [parsed];
+
     try {
-        outputBox.value = jsonToCsv(parsed);
+        outputBox.value = jsonToCsv(data);
     } catch (e) {
         showWarning(e.message);
         outputBox.value = "";

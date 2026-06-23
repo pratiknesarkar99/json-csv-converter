@@ -5,45 +5,79 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CSV2JSON</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-    <main class="app">
-        <h1>CSV2JSON</h1>
+    <div class="app">
+        <header class="app-header">
+            <div class="brand">
+                <span class="brand-mark">{ }</span>
+                <h1>CSV<span class="brand-accent">2</span>JSON</h1>
+            </div>
+            <button id="theme-toggle-btn" class="theme-toggle" type="button" aria-label="Toggle light and dark theme">
+                <span class="theme-icon theme-icon-sun">&#9728;</span>
+                <span class="theme-icon theme-icon-moon">&#9789;</span>
+            </button>
+        </header>
 
         <p id="warning" class="warning" hidden></p>
 
         <div class="file-actions">
-            <button id="open-csv-btn" type="button">Open CSV</button>
-            <button id="save-csv-btn" type="button">Save CSV</button>
-            <button id="open-json-btn" type="button">Open JSON</button>
-            <button id="save-json-btn" type="button">Save JSON</button>
+            <div class="file-group">
+                <span class="file-group-label">CSV</span>
+                <button id="open-csv-btn" class="btn btn-ghost" type="button">Open</button>
+                <button id="save-csv-btn" class="btn btn-ghost" type="button">Save</button>
+            </div>
+            <div class="file-group">
+                <span class="file-group-label">JSON</span>
+                <button id="open-json-btn" class="btn btn-ghost" type="button">Open</button>
+                <button id="save-json-btn" class="btn btn-ghost" type="button">Save</button>
+            </div>
             <span id="file-status" class="file-status"></span>
         </div>
 
         <div class="converter">
             <div class="field">
                 <label for="input-box">Input</label>
-                <textarea id="input-box" placeholder="Paste JSON or CSV here..."></textarea>
+                <textarea id="input-box" placeholder="Paste JSON or CSV here..." spellcheck="false"></textarea>
+            </div>
+
+            <div class="pipe" aria-hidden="true">
+                <span class="pipe-line"></span>
+                <span class="pipe-glyph">&rarr;</span>
+                <span class="pipe-line"></span>
             </div>
 
             <div class="actions-mid">
-                <button id="to-csv-btn" type="button">To CSV &rarr;</button>
-                <button id="to-json-btn" type="button">To JSON &rarr;</button>
+                <button id="to-csv-btn" class="btn btn-primary" type="button">To CSV</button>
+                <button id="to-json-btn" class="btn btn-primary" type="button">To JSON</button>
+            </div>
+
+            <div class="pipe" aria-hidden="true">
+                <span class="pipe-line"></span>
+                <span class="pipe-glyph">&rarr;</span>
+                <span class="pipe-line"></span>
             </div>
 
             <div class="field">
                 <label for="output-box">Output</label>
-                <textarea id="output-box" placeholder="Result will appear here..." readonly></textarea>
+                <textarea id="output-box" placeholder="Result will appear here..." readonly
+                    spellcheck="false"></textarea>
             </div>
         </div>
 
         <div class="actions">
-            <button id="clear-btn" type="button">Clear</button>
+            <button id="clear-btn" class="btn btn-danger" type="button">Clear</button>
         </div>
-    </main>
+    </div>
 
+    <script type="module" src="scripts/theme.js"></script>
     <script type="module" src="scripts/main.js"></script>
 </body>
 

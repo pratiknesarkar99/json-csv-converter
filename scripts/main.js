@@ -1,7 +1,7 @@
 import { jsonToCsv } from "./jsonToCsv.js";
 import { csvToJson } from "./csvToJson.js";
 import { isValidJson } from "./validators.js";
-import { openFile, saveFile, clearCurrentFileHandle } from "./fileIO.js";
+import { openFile, saveFile, clearFileHandles } from "./fileIO.js";
 import {
     inputBox,
     outputBox,
@@ -11,6 +11,7 @@ import {
     openCsvBtn,
     saveCsvBtn,
     openJsonBtn,
+    saveJsonBtn,
     showWarning,
     clearWarning,
     setFileStatus,
@@ -67,7 +68,7 @@ openCsvBtn.addEventListener("click", async () => {
     clearWarning();
 
     try {
-        const result = await openFile([".csv"]);
+        const result = await openFile("csv", [".csv"]);
         if (result === null) return; // user cancelled picker
 
         inputBox.value = result.content;
@@ -81,7 +82,7 @@ openJsonBtn.addEventListener("click", async () => {
     clearWarning();
 
     try {
-        const result = await openFile([".json"]);
+        const result = await openFile("json", [".json"]);
         if (result === null) return; // user cancelled picker
 
         inputBox.value = result.content;
@@ -104,7 +105,28 @@ saveCsvBtn.addEventListener("click", async () => {
     }
 
     try {
-        const savedName = await saveFile(content, [".csv"], "data.csv");
+        const savedName = await saveFile("csv", content, [".csv"], "data.csv");
+        if (savedName === null) return; // user cancelled picker
+        setFileStatus(savedName);
+    } catch (e) {
+        showWarning(e.message);
+    }
+});
+
+saveJsonBtn.addEventListener("click", async () => {
+    clearWarning();
+
+    // JSON content is whichever box currently holds it: prefer output (result
+    // of a "To JSON" conversion), fall back to input (a JSON file opened directly).
+    const content = outputBox.value.trim() !== "" ? outputBox.value : inputBox.value;
+
+    if (content.trim() === "") {
+        showWarning("Nothing to save. Convert or load some JSON first.");
+        return;
+    }
+
+    try {
+        const savedName = await saveFile("json", content, [".json"], "data.json");
         if (savedName === null) return; // user cancelled picker
         setFileStatus(savedName);
     } catch (e) {
@@ -116,6 +138,6 @@ clearBtn.addEventListener("click", () => {
     inputBox.value = "";
     outputBox.value = "";
     clearWarning();
-    clearCurrentFileHandle();
+    clearFileHandles();
     setFileStatus("");
 });

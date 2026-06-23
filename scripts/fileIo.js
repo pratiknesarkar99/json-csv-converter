@@ -1,57 +1,13 @@
 /**
  * Wraps the File System Access API for opening and saving text files.
- * Tracks the currently open file handle so Save can write back to it.
+ * Tracks separate file handles per type ("csv" / "json") so opening one
+ * doesn't clobber the other when saving.
  */
 
-/**
- * Saves text content to a file. If a file handle is already open (from Open
- * or a previous Save), writes directly to it. Otherwise prompts a save picker
- * and tracks the resulting handle for subsequent saves.
- *
- * @param {string} content - text content to write
- * @param {Array<string>} extensions - e.g. [".csv"] for the save picker filter
- * @param {string} suggestedName - default filename if no handle exists yet
- * @returns {Promise<string|null>} the saved filename, or null if user cancelled
- * @throws {Error} if unsupported or the write fails
- */
-export async function saveFile(content, extensions, suggestedName) {
-    if (!isFileSystemAccessSupported()) {
-        throw new Error(
-            "Your browser doesn't support file saving. Try Chrome or Edge."
-        );
-    }
-
-    let handle = currentFileHandle;
-
-    if (!handle) {
-        try {
-            handle = await window.showSaveFilePicker({
-                suggestedName,
-                types: [
-                    {
-                        description: "Text files",
-                        accept: { "text/plain": extensions },
-                    },
-                ],
-            });
-        } catch (e) {
-            if (e.name === "AbortError") return null;
-            throw new Error("Could not open the save picker.");
-        }
-        currentFileHandle = handle;
-    }
-
-    try {
-        const writable = await handle.createWritable();
-        await writable.write(content);
-        await writable.close();
-        return handle.name;
-    } catch (e) {
-        throw new Error("Failed to save the file.");
-    }
-}
-
-let currentFileHandle = null;
+const fileHandles = {
+    csv: null,
+    json: null,
+};
 
 /**
  * Returns true if the browser supports the File System Access API.
@@ -61,13 +17,15 @@ export function isFileSystemAccessSupported() {
 }
 
 /**
- * Opens a file picker, reads the selected file as text, and stores its handle.
+ * Opens a file picker, reads the selected file as text, and stores its
+ * handle under the given type key.
  *
+ * @param {"csv"|"json"} type - which handle slot to track this file under
  * @param {Array<string>} extensions - e.g. [".csv"] for the picker filter
- * @returns {Promise<{ name: string, content: string }>}
- * @throws {Error} if unsupported, cancelled, or read fails
+ * @returns {Promise<{ name: string, content: string }|null>} null if cancelled
+ * @throws {Error} if unsupported or read fails
  */
-export async function openFile(extensions) {
+export async function openFile(type, extensions) {
     if (!isFileSystemAccessSupported()) {
         throw new Error(
             "Your browser doesn't support file opening. Try Chrome or Edge."
@@ -95,7 +53,7 @@ export async function openFile(extensions) {
     try {
         const file = await handle.getFile();
         const content = await file.text();
-        currentFileHandle = handle;
+        fileHandles[type] = handle;
         return { name: file.name, content };
     } catch (e) {
         throw new Error("Failed to read the selected file.");
@@ -103,15 +61,58 @@ export async function openFile(extensions) {
 }
 
 /**
- * Returns the currently tracked file handle, or null if none is open.
+ * Saves text content to a file under the given type key. If a handle is
+ * already tracked for that type (from Open or a previous Save), writes
+ * directly to it. Otherwise prompts a save picker and tracks the result.
+ *
+ * @param {"csv"|"json"} type - which handle slot to use/save
+ * @param {string} content - text content to write
+ * @param {Array<string>} extensions - e.g. [".csv"] for the save picker filter
+ * @param {string} suggestedName - default filename if no handle exists yet
+ * @returns {Promise<string|null>} the saved filename, or null if user cancelled
+ * @throws {Error} if unsupported or the write fails
  */
-export function getCurrentFileHandle() {
-    return currentFileHandle;
+export async function saveFile(type, content, extensions, suggestedName) {
+    if (!isFileSystemAccessSupported()) {
+        throw new Error(
+            "Your browser doesn't support file saving. Try Chrome or Edge."
+        );
+    }
+
+    let handle = fileHandles[type];
+
+    if (!handle) {
+        try {
+            handle = await window.showSaveFilePicker({
+                suggestedName,
+                types: [
+                    {
+                        description: "Text files",
+                        accept: { "text/plain": extensions },
+                    },
+                ],
+            });
+        } catch (e) {
+            if (e.name === "AbortError") return null;
+            throw new Error("Could not open the save picker.");
+        }
+        fileHandles[type] = handle;
+    }
+
+    try {
+        const writable = await handle.createWritable();
+        await writable.write(content);
+        await writable.close();
+        return handle.name;
+    } catch (e) {
+        throw new Error("Failed to save the file.");
+    }
 }
 
 /**
- * Clears the tracked file handle (e.g. on Clear button).
+ * Clears all tracked file handles (e.g. on Clear button).
  */
-export function clearCurrentFileHandle() {
-    currentFileHandle = null;
+export function clearFileHandles() {
+    fileHandles.csv = null;
+    fileHandles.json = null;
 }

@@ -32,20 +32,3 @@ export function clearWarning() {
     warningEl.textContent = "";
     warningEl.hidden = true;
 }
-
-/**
- * Displays a warning message to the user.
- * @param {string} msg
- */
-export function showWarning(msg) {
-    warningEl.textContent = msg;
-    warningEl.hidden = false;
-}
-
-/**
- * Clears any visible warning message.
- */
-export function clearWarning() {
-    warningEl.textContent = "";
-    warningEl.hidden = true;
-}

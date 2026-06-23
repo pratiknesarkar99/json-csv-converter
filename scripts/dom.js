@@ -8,7 +8,8 @@ export const warningEl = document.getElementById("warning");
 export const openBtn = document.getElementById("open-btn");
 export const saveBtn = document.getElementById("save-btn");
 export const fileStatusEl = document.getElementById("file-status");
-
+export const copyInputBtn = document.getElementById("copy-input-btn");
+export const copyOutputBtn = document.getElementById("copy-output-btn");
 /**
  * Updates the small filename indicator next to the file action buttons.
  * @param {string} name - filename to display, or "" to clear

@@ -37,7 +37,10 @@
         <div class="converter">
             <div class="field">
                 <label for="input-box">Input</label>
-                <textarea id="input-box" placeholder="Paste JSON or CSV here..." spellcheck="false"></textarea>
+                <div class="textarea-wrap">
+                    <textarea id="input-box" placeholder="Paste JSON or CSV here..." spellcheck="false"></textarea>
+                    <button id="copy-input-btn" class="copy-btn" type="button" aria-label="Copy input">⧉</button>
+                </div>
             </div>
 
             <div class="pipe" aria-hidden="true">
@@ -61,13 +64,18 @@
 
             <div class="field">
                 <label for="output-box">Output</label>
-                <textarea id="output-box" placeholder="Result will appear here..." readonly
-                    spellcheck="false"></textarea>
+                <div class="textarea-wrap">
+                    <textarea id="output-box" placeholder="Result will appear here..." readonly
+                        spellcheck="false"></textarea>
+                    <button id="copy-output-btn" class="copy-btn" type="button" aria-label="Copy output">⧉</button>
+                </div>
+
             </div>
         </div>
     </div>
 
     <script type="module" src="scripts/theme.js"></script>
+    <script type="module" src="scripts/clipboard.js"></script>
     <script type="module" src="scripts/main.js"></script>
 </body>
 

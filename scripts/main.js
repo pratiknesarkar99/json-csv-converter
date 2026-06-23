@@ -1,4 +1,5 @@
 import { jsonToCsv } from "./jsonToCsv.js";
+import { csvToJson } from "./csvToJson.js";
 import { isValidJson } from "./validators.js";
 import {
     inputBox,
@@ -32,7 +33,16 @@ toCsvBtn.addEventListener("click", () => {
 
 toJsonBtn.addEventListener("click", () => {
     clearWarning();
-    showWarning("CSV to JSON conversion is coming soon.");
+
+    const rawInput = inputBox.value;
+
+    try {
+        const result = csvToJson(rawInput);
+        outputBox.value = JSON.stringify(result, null, 2);
+    } catch (e) {
+        showWarning(e.message);
+        outputBox.value = "";
+    }
 });
 
 clearBtn.addEventListener("click", () => {

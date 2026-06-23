@@ -10,6 +10,7 @@ import {
     clearBtn,
     openCsvBtn,
     saveCsvBtn,
+    openJsonBtn,
     showWarning,
     clearWarning,
     setFileStatus,
@@ -67,6 +68,20 @@ openCsvBtn.addEventListener("click", async () => {
 
     try {
         const result = await openFile([".csv"]);
+        if (result === null) return; // user cancelled picker
+
+        inputBox.value = result.content;
+        setFileStatus(result.name);
+    } catch (e) {
+        showWarning(e.message);
+    }
+});
+
+openJsonBtn.addEventListener("click", async () => {
+    clearWarning();
+
+    try {
+        const result = await openFile([".json"]);
         if (result === null) return; // user cancelled picker
 
         inputBox.value = result.content;

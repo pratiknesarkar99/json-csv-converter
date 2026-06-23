@@ -7,6 +7,7 @@ export const clearBtn = document.getElementById("clear-btn");
 export const warningEl = document.getElementById("warning");
 export const openCsvBtn = document.getElementById("open-csv-btn");
 export const saveCsvBtn = document.getElementById("save-csv-btn");
+export const openJsonBtn = document.getElementById("open-json-btn");
 export const fileStatusEl = document.getElementById("file-status");
 
 /**

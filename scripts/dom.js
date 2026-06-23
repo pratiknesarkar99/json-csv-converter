@@ -5,6 +5,16 @@ export const toCsvBtn = document.getElementById("to-csv-btn");
 export const toJsonBtn = document.getElementById("to-json-btn");
 export const clearBtn = document.getElementById("clear-btn");
 export const warningEl = document.getElementById("warning");
+export const openCsvBtn = document.getElementById("open-csv-btn");
+export const fileStatusEl = document.getElementById("file-status");
+
+/**
+ * Updates the small filename indicator next to the file action buttons.
+ * @param {string} name - filename to display, or "" to clear
+ */
+export function setFileStatus(name) {
+    fileStatusEl.textContent = name ? `Loaded: ${name}` : "";
+}
 
 /**
  * Displays a warning message to the user.

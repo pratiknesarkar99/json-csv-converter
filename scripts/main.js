@@ -1,14 +1,17 @@
 import { jsonToCsv } from "./jsonToCsv.js";
 import { csvToJson } from "./csvToJson.js";
 import { isValidJson } from "./validators.js";
+import { openFile, clearCurrentFileHandle } from "./fileIO.js";
 import {
     inputBox,
     outputBox,
     toCsvBtn,
     toJsonBtn,
     clearBtn,
+    openCsvBtn,
     showWarning,
     clearWarning,
+    setFileStatus,
 } from "./dom.js";
 
 toCsvBtn.addEventListener("click", () => {
@@ -58,8 +61,24 @@ toJsonBtn.addEventListener("click", () => {
     }
 });
 
+openCsvBtn.addEventListener("click", async () => {
+    clearWarning();
+
+    try {
+        const result = await openFile([".csv"]);
+        if (result === null) return; // user cancelled picker
+
+        inputBox.value = result.content;
+        setFileStatus(result.name);
+    } catch (e) {
+        showWarning(e.message);
+    }
+});
+
 clearBtn.addEventListener("click", () => {
     inputBox.value = "";
     outputBox.value = "";
     clearWarning();
+    clearCurrentFileHandle();
+    setFileStatus("");
 });

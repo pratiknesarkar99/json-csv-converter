@@ -15,10 +15,17 @@ toCsvBtn.addEventListener("click", () => {
     clearWarning();
 
     const rawInput = inputBox.value;
+
+    if (rawInput.trim() === "") {
+        showWarning("Input is empty. Please paste some JSON first.");
+        outputBox.value = "";
+        return;
+    }
+
     const parsed = isValidJson(rawInput);
 
     if (parsed === null) {
-        showWarning("Please enter valid, non-empty JSON.");
+        showWarning("Please enter valid JSON.");
         outputBox.value = "";
         return;
     }
@@ -35,6 +42,12 @@ toJsonBtn.addEventListener("click", () => {
     clearWarning();
 
     const rawInput = inputBox.value;
+
+    if (rawInput.trim() === "") {
+        showWarning("Input is empty. Please paste some CSV first.");
+        outputBox.value = "";
+        return;
+    }
 
     try {
         const result = csvToJson(rawInput);

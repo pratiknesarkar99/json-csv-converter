@@ -1,7 +1,7 @@
 import { jsonToCsv } from "./jsonToCsv.js";
 import { csvToJson } from "./csvToJson.js";
 import { isValidJson } from "./validators.js";
-import { openFile, clearCurrentFileHandle } from "./fileIO.js";
+import { openFile, saveFile, clearCurrentFileHandle } from "./fileIO.js";
 import {
     inputBox,
     outputBox,
@@ -9,6 +9,7 @@ import {
     toJsonBtn,
     clearBtn,
     openCsvBtn,
+    saveCsvBtn,
     showWarning,
     clearWarning,
     setFileStatus,
@@ -70,6 +71,27 @@ openCsvBtn.addEventListener("click", async () => {
 
         inputBox.value = result.content;
         setFileStatus(result.name);
+    } catch (e) {
+        showWarning(e.message);
+    }
+});
+
+saveCsvBtn.addEventListener("click", async () => {
+    clearWarning();
+
+    // CSV content is whichever box currently holds it: prefer output (result
+    // of a "To CSV" conversion), fall back to input (a CSV file opened directly).
+    const content = outputBox.value.trim() !== "" ? outputBox.value : inputBox.value;
+
+    if (content.trim() === "") {
+        showWarning("Nothing to save. Convert or load some CSV first.");
+        return;
+    }
+
+    try {
+        const savedName = await saveFile(content, [".csv"], "data.csv");
+        if (savedName === null) return; // user cancelled picker
+        setFileStatus(savedName);
     } catch (e) {
         showWarning(e.message);
     }

@@ -3,6 +3,54 @@
  * Tracks the currently open file handle so Save can write back to it.
  */
 
+/**
+ * Saves text content to a file. If a file handle is already open (from Open
+ * or a previous Save), writes directly to it. Otherwise prompts a save picker
+ * and tracks the resulting handle for subsequent saves.
+ *
+ * @param {string} content - text content to write
+ * @param {Array<string>} extensions - e.g. [".csv"] for the save picker filter
+ * @param {string} suggestedName - default filename if no handle exists yet
+ * @returns {Promise<string|null>} the saved filename, or null if user cancelled
+ * @throws {Error} if unsupported or the write fails
+ */
+export async function saveFile(content, extensions, suggestedName) {
+    if (!isFileSystemAccessSupported()) {
+        throw new Error(
+            "Your browser doesn't support file saving. Try Chrome or Edge."
+        );
+    }
+
+    let handle = currentFileHandle;
+
+    if (!handle) {
+        try {
+            handle = await window.showSaveFilePicker({
+                suggestedName,
+                types: [
+                    {
+                        description: "Text files",
+                        accept: { "text/plain": extensions },
+                    },
+                ],
+            });
+        } catch (e) {
+            if (e.name === "AbortError") return null;
+            throw new Error("Could not open the save picker.");
+        }
+        currentFileHandle = handle;
+    }
+
+    try {
+        const writable = await handle.createWritable();
+        await writable.write(content);
+        await writable.close();
+        return handle.name;
+    } catch (e) {
+        throw new Error("Failed to save the file.");
+    }
+}
+
 let currentFileHandle = null;
 
 /**

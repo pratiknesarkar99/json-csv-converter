@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSV2JSON</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <main class="app">
+        <h1>CSV2JSON</h1>
+
+        <p id="warning" class="warning" hidden></p>
+
+        <div class="converter">
+            <div class="field">
+                <label for="json-input">JSON</label>
+                <textarea id="json-input" placeholder="Paste JSON here..."></textarea>
+            </div>
+
+            <div class="field">
+                <label for="csv-output">CSV</label>
+                <textarea id="csv-output" placeholder="CSV output will appear here..." readonly></textarea>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button id="convert-btn" type="button">Convert to CSV</button>
+            <button id="clear-btn" type="button">Clear</button>
+        </div>
+    </main>
+
+    <script type="module" src="scripts/main.js"></script>
+</body>
+
+</html>

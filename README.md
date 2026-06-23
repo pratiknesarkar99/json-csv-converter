@@ -1,6 +1,6 @@
 # CSV2JSON
 
-A browser-based tool for converting between CSV and JSON, in either direction, with no external parsing libraries. Built as a Tier 1 project from the [App Ideas Collection](https://github.com/florinpop17/app-ideas), extended with file system integration and a custom UI.
+A browser-based tool for converting between CSV and JSON, in either direction, with no external parsing libraries.
 
 ## Features
 

@@ -16,18 +16,22 @@
 
         <div class="converter">
             <div class="field">
-                <label for="json-input">JSON</label>
-                <textarea id="json-input" placeholder="Paste JSON here..."></textarea>
+                <label for="input-box">Input</label>
+                <textarea id="input-box" placeholder="Paste JSON or CSV here..."></textarea>
+            </div>
+
+            <div class="actions-mid">
+                <button id="to-csv-btn" type="button">To CSV &rarr;</button>
+                <button id="to-json-btn" type="button">To JSON &rarr;</button>
             </div>
 
             <div class="field">
-                <label for="csv-output">CSV</label>
-                <textarea id="csv-output" placeholder="CSV output will appear here..." readonly></textarea>
+                <label for="output-box">Output</label>
+                <textarea id="output-box" placeholder="Result will appear here..." readonly></textarea>
             </div>
         </div>
 
         <div class="actions">
-            <button id="convert-btn" type="button">Convert to CSV</button>
             <button id="clear-btn" type="button">Clear</button>
         </div>
     </main>

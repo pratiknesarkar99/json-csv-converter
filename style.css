@@ -38,6 +38,19 @@ h1 {
     margin-bottom: 1rem;
 }
 
+.actions-mid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    justify-content: center;
+    align-items: stretch;
+    min-width: 140px;
+}
+
+.actions-mid button {
+    white-space: nowrap;
+}
+
 .converter {
     display: flex;
     gap: 1rem;
@@ -92,7 +105,8 @@ button:hover {
     opacity: 0.9;
 }
 
-#clear-btn {
+#clear-btn,
+#to-json-btn {
     background: var(--color-border);
     color: var(--color-text);
 }
